@@ -183,7 +183,7 @@ function main {
 
          user)
             #! container_running "${SERVICENAME}-start" || die "Can't configure while ${SERVICENAME} is started. Stop it first."
-            [ ! -v PASSWORD ] || [ -z $PASSWORD ] || COMMANDOPTS=("-i" "-e" "PASSWORD=$PASSWORD")
+            [ ! -v PASSWORD ] || [ -z "$PASSWORD" ] || COMMANDOPTS=("-i" "-e" "PASSWORD=$PASSWORD")
             dockerrun "docker-smb-user" "$@"
             ;;
             

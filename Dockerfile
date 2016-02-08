@@ -21,6 +21,7 @@ RUN useradd -M samba
 
 RUN cp -r /etc/samba /originals/etcsamba
 RUN cp -r /var/lib/samba /originals/varlibsamba
+RUN chown -R samba:root /originals
 
 # allow my_init to be run as root by anyone.
 RUN chown root:root /sbin/my_init && chmod 4755 /sbin/my_init

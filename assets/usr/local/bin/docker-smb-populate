@@ -4,12 +4,17 @@
 # RUN cp -r /etc/samba /originals/etcsamba
 # RUN cp -r /var/lib/samba /originals/varlibsamba
 
-cp -a /originals/etcsamba/* /etc/samba/
-cp -a /originals/varlibsamba/* /var/lib/samba/
+function die {
+   echo "$1">&2
+   exit 1
+}
+
+cp -a /originals/etcsamba/* /etc/samba/          || die "Can't copy originals to /etc/samba"
+cp -a /originals/varlibsamba/* /var/lib/samba/   || die "Can't copy originals to /var/lib/samba/"
 
 
-mkdir /etc/samba/dockershareinfo
-touch /etc/samba/initcomplete
+mkdir /etc/samba/dockershareinfo || die "Can't create /etc/samba/dockershareinfo"
+touch /etc/samba/initcomplete    || die "Can't create /etc/samba/initcomplete"
 
 cat <<EOF > /etc/samba/smb.conf
 [global]
@@ -31,4 +36,3 @@ cat <<EOF > /etc/samba/smb.conf
         pam password change = no
         hosts allow = ALL
 EOF
-
