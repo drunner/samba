@@ -1,0 +1,4 @@
+#!/bin/sh
+#exec /usr/sbin/smbd -F -S >> /var/log/smbd_stdout.log 2>&1
+exec /etc/init.d/samba start
+

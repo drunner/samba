@@ -1,0 +1,139 @@
+#!/bin/bash
+
+function showusage {
+cat <<EOF
+
+NAME
+   share - manage samba shares
+
+SYNOPSIS
+   share [OPTION]... HOSTPATH SHARENAME
+
+DESCRIPTION
+   Create or update a samba share from a mounted host directory.
+
+   -w USERNAME
+        Add USERNAME with read and write access to the share (can use multiple times)
+
+   -r USERNAME
+        Add USERNAME with read only access to the share (can use multiple times)
+
+   -p {ro/rw}
+        Add public access either read only (ro) or read-write (rw)
+
+   -f USERNAME
+        All users access the share as USERNAME
+
+   -g GROUP
+        All users access the share with group GROUP
+
+RETURN VALUE
+   0   - success
+   1   - error
+   3   - no change
+   
+EOF
+   exit 1
+}
+
+function addro {
+  if [ -z "$ROUSERS" ]; then 
+    ROUSERS="${1}"
+  else
+    ROUSERS="${ROUSERS}, ${1}"
+  fi
+}
+
+function addrw {
+  if [ -z "$RWUSERS" ]; then 
+    RWUSERS="${1}"
+  else
+    RWUSERS="${RWUSERS}, ${1}"
+  fi
+}
+
+if [ ! -e /etc/samba/initcomplete ]; then
+   echo "Run init before trying to configure samba."
+   exit 1
+fi
+
+GUESTOK="no"
+
+# first colon = silent error reporting
+while getopts ":f:p:g:w:o:" OPTS; do
+  case ${OPTS} in
+     f)
+        FORCEUSER=${OPTARG}
+        ;;
+     g)
+        FORCEGROUP=${OPTARG}
+        ;;
+     p)
+        case ${OPTARG} in
+            ro) addro "guest" ;;
+            rw) addrw "guest" ;;
+            *)  
+              echo "Invalid argument to -p: $OPTARG" >&2 
+              showusage
+              ;;
+        esac
+        GUESTOK="yes"
+        ;;
+     w)
+        addrw ${OPTARG} 
+        ;;
+     r)
+        addro ${OPTARG}
+        ;;    
+     \?)
+        echo "Invalid option: -$OPTARG" >&2
+        showusage
+        ;;   
+     :)
+        echo "Option -$OPTARG requires an argument." >&2
+        showusage
+        ;;
+   esac
+done
+
+shift $((OPTIND-1))
+
+if [ "$#" -ne 2 ]; then
+  echo "Requires host path and share name (only) after options."
+  showusage
+fi
+
+cd "/etc/samba"
+
+# remove old section for this share (if it exists)
+sed '/\['"$2"'\]/,/\['"$2"'\]/d' smb.conf > smb.conf.tmp
+
+cat <<EOF >>smb.conf.tmp
+
+[${2}]
+   browseable = yes
+   read list = ${ROUSERS}
+   write list = ${RWUSERS}
+   path = /share/${2}
+   force user = ${FORCEUSER}
+   force group = ${FORCEGROUP}
+   guest ok = ${GUESTOK}
+;[${2}]
+
+EOF
+
+# tidy up multiple newlines in a row. 
+FILE=$(cat -s smb.conf.tmp)
+echo "$FILE" > smb.conf.tmp
+
+diff smb.conf.tmp smb.conf >/dev/null 2>&1
+if [ $? -eq 0 ]; then 
+   rm smb.conf.tmp
+   exit 3
+fi
+
+echo "-v ${1}:/share/${2}" > "/etc/samba/dockershareinfo/${2}"
+
+rm smb.conf
+mv smb.conf.tmp smb.conf
+exit 0

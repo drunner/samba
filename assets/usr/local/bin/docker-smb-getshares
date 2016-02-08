@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd /etc/samba/dockershareinfo
+COUNT=$(ls -1 | wc -l)
+if [ $COUNT -gt 0 ]; then 
+  echo "Found ${COUNT} shared folders." >&2
+  cat * | tr '\n' ' '
+  exit 0
+fi
+
+echo "There are no shared folders." >&2
+exit 1

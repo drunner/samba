@@ -1,0 +1,27 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. $DIR/bash.conf
+
+
+function checkvolexists {
+  docker volume ls | grep $1 > /dev/null
+  if [ $? -ne 0 ] ; then
+     echo "run init before trying to configure samba."
+     exit 1
+  fi
+}
+checkvolexists samba-etc
+checkvolexists samba-extrausers
+checkvolexists samba-varlib
+
+
+docker run --name sambaconfig -h ${HOSTNAME} \
+    ${EXTRAPARAM} \
+    -v samba-etc:/etc/samba -v samba-varlib:/var/lib/samba -v samba-extrausers:/var/lib/extrausers \
+    ${CONTAINER_NAME} /usr/local/bin/docker-smb-share $@
+
+rval=$?
+
+docker rm sambaconfig >/dev/null 2>&1
+
+exit $rval

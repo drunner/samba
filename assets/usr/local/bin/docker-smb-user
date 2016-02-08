@@ -1,0 +1,86 @@
+#!/bin/bash
+
+function update_ent {
+  tail -n1 /etc/passwd >> /var/lib/extrausers/passwd
+  tail -n1 /etc/shadow >> /var/lib/extrausers/shadow
+  tail -n1 /etc/group >> /var/lib/extrausers/group
+}
+
+function showusage {
+cat <<EOF
+
+NAME
+   user - manage samba users
+
+SYNOPSIS
+   user add USERNAME [PASSWORD]
+   user password USERNAME [PASSWORD]
+   user delete USERNAME
+
+DESCRIPTION
+   add, delete or update user passwords. Can use environment variable PASSWORD or pass as parameter.
+
+RETURN VALUE
+   0   - success
+   1   - error
+   3   - no changes made
+
+EOF
+  exit 1
+}
+
+if [ ! -e /etc/samba/initcomplete ]; then
+   echo "Run init before trying to configure samba."
+   exit 1
+fi
+
+if [ -z $PASSWORD ] && [ $# -eq 3 ]; then
+   PASSWORD=$3
+fi
+
+case $1 in
+ add)
+   if [ -z $PASSWORD ] || [ $# -lt 2 ]; then
+      showusage
+   else
+      useradd -M "$2"
+
+      if [ "$?" -ne 0 ]; then
+          exit 3
+      fi     
+
+      echo "$2:${PASSWORD}" | chpasswd
+      echo -e "${PASSWORD}\n${PASSWORD}" | (smbpasswd -a -s "$2")
+      update_ent
+   fi   
+ ;;
+ delete)
+    if [[ $# -ne 2 ]]; then
+      showusage
+   else
+      cp /etc/passwd /etc/shadow /etc/group /tmp/
+
+      for file in passwd shadow group; do
+        cat /var/lib/extrausers/$file >> /etc/$file
+      done
+
+      userdel $2 
+
+      for file in passwd shadow group; do
+        diff /tmp/$file /etc/$file | sed -n '/^-[^-]/{ s/^-//; p; }' >> /var/lib/extrausers/$file
+      done
+   fi
+ ;;
+ password)
+   if [ -z $PASSWORD ] || [ $# -lt 2 ]; then
+      showusage
+   else
+      echo "$2:${PASSWORD}" | chpasswd
+      echo -e "${PASSWORD}\n${PASSWORD}" | (smbpasswd -a -s "$2")
+      update_ent
+   fi
+ ;;
+ *)
+   showusage
+ ;;
+esac
