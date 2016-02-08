@@ -161,7 +161,7 @@ function main {
             ! container_running "${SERVICENAME}-start" || die "Already running" 3 
             ! container_exists "${SERVICENAME}-start"  || docker rm "${SERVICENAME}-start" >/dev/null 2>&1
 
-            COMMANDOPTS=("-p 137:137/udp" "-p 138:138/udp" "-p 135:135" "-p 139:139" "-p 445:445" "--restart=always")
+            COMMANDOPTS=("-p" "137:137/udp" "-p" "138:138/udp" "-p" "135:135" "-p" "139:139" "-p" "445:445" "--restart=always")
             dockerrund 
             showStatus
             ;;
