@@ -86,7 +86,7 @@ function showStatus {
    container_exists "${SERVICENAME}-start"  || { echo "${SERVICENAME}'s container is stopped and removed." ; exit 0 ; }
    container_running "${SERVICENAME}-start" || { echo "${SERVICENAME}'s container is stopped but not removed." ; exit 0 ; }
    getPort
-   echo "Minecraft is running on ${HOSTIP}:${PORT}"   
+   echo "Samba is running on ${HOSTIP}."   
 }
 
 #------------------------------------------------------------------------------------
