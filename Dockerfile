@@ -13,9 +13,21 @@ EXPOSE 139
 EXPOSE 135
 
 # Add user management tool
-ADD ["./assets","/"]
-RUN mkdir /tempmount /share
+COPY ["./assets","/"]
+COPY ["./drunner","/drunner"]
+RUN mkdir /tempmount /share /originals
 RUN useradd -M PCGUEST
+RUN useradd -M samba
+
+RUN cp -r /etc/samba /originals/etcsamba
+RUN cp -r /var/lib/samba /originals/varlibsamba
+
+# allow my_init to be run as root by anyone.
+RUN chown root:root /sbin/my_init && chmod 4755 /sbin/my_init
+RUN chmod a+rwx /etc/samba /var/lib/samba /var/lib/extrausers
+RUN chmod a+rx -R /usr/local/bin/
+
+USER samba
 
 VOLUME ["/etc/samba","/var/lib/samba","/var/lib/extrausers"]
 #,"tempmount"]

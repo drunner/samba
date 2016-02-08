@@ -1,10 +1,17 @@
 #!/bin/bash
-cp -a /etc/samba/* /tempmount/
 
-mkdir /tempmount/dockershareinfo
-touch /tempmount/initcomplete
+# run from Dockerfile:
+# RUN cp -r /etc/samba /originals/etcsamba
+# RUN cp -r /var/lib/samba /originals/varlibsamba
 
-cat <<EOF > /tempmount/smb.conf
+cp -a /originals/etcsamba/* /etc/samba/
+cp -a /originals/varlibsamba/* /var/lib/samba/
+
+
+mkdir /etc/samba/dockershareinfo
+touch /etc/samba/initcomplete
+
+cat <<EOF > /etc/samba/smb.conf
 [global]
         netbios name = ${HOSTNAME}
         server string = %h server (Samba, Docker)
@@ -24,3 +31,4 @@ cat <<EOF > /tempmount/smb.conf
         pam password change = no
         hosts allow = ALL
 EOF
+

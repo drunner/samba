@@ -1,8 +1,0 @@
-#!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR/bash.conf
-
-docker exec -it ${CONTAINER_SHORTNAME} /bin/bash
-
-
-
