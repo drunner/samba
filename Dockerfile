@@ -26,7 +26,7 @@ RUN chown -R samba:root /originals
 # allow my_init to be run as root by anyone.
 RUN chown root:root /sbin/my_init && chmod 4755 /sbin/my_init
 RUN chmod a+rwx /etc/samba /var/lib/samba /var/lib/extrausers
-RUN chmod a+rx -R /usr/local/bin/
+RUN chmod a+rx -R /usr/local/bin/ && chown -R root:root /usr/local/bin && chmod 4755 /usr/local/bin/docker-smb-*
 
 USER samba
 
