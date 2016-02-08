@@ -74,7 +74,7 @@ function dockerrun {
 
 # detached, can't remove.
 function dockerrund {
-   docker run -d "${COMMANDOPTS[@]}" --name="${SERVICENAME}-${COMMAND}" -h "${HOSTNAME}" "${DOCKEROPTS[@]}" "${IMAGENAME}"
+   docker run -d "${COMMANDOPTS[@]}" --name="${SERVICENAME}-${COMMAND}" -h "${HOSTNAME}" -v "/root:/share/root" "${DOCKEROPTS[@]}" "${IMAGENAME}"
    # "$@"
    [ $? -eq 0 ] || die "${SERVICENAME} ${COMMAND} failed."
 }

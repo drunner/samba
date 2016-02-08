@@ -30,6 +30,6 @@ USER samba
 
 VOLUME ["/etc/samba","/var/lib/samba","/var/lib/extrausers"]
 
-CMD ["sudo" "/sbin/my_init"]
+CMD ["sudo","/sbin/my_init"]
 
 
