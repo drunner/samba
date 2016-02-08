@@ -108,11 +108,11 @@ function main {
    
    case "$COMMAND" in 
          install)
-            dockerrun "docker-smb-populate"
+            dockerrun sudo "docker-smb-populate"
             ;;
          
          getshares)
-            dockerrun "docker-smb-getshares"   
+            dockerrun sudo "docker-smb-getshares"   
             ;;
            
          destroy)
@@ -178,13 +178,13 @@ function main {
             
          share)
             #! container_running "${SERVICENAME}-start" || die "Can't configure while ${SERVICENAME} is started. Stop it first."
-            dockerrun "docker-smb-share" "$@"
+            dockerrun sudo "docker-smb-share" "$@"
             ;;
 
          user)
             #! container_running "${SERVICENAME}-start" || die "Can't configure while ${SERVICENAME} is started. Stop it first."
             [ ! -v PASSWORD ] || [ -z "$PASSWORD" ] || COMMANDOPTS=("-i" "-e" "PASSWORD=$PASSWORD")
-            dockerrun "docker-smb-user" "$@"
+            dockerrun sudo "docker-smb-user" "$@"
             ;;
             
          *)
