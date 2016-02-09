@@ -98,6 +98,8 @@ done
 
 shift $((OPTIND-1))
 
+echo "Hi! I'm Samba Share!"
+
 if [ "$#" -ne 2 ]; then
   echo "Requires host path and share name (only) after options."
   showusage
@@ -129,6 +131,7 @@ echo "$FILE" > smb.conf.tmp
 diff smb.conf.tmp smb.conf >/dev/null 2>&1
 if [ $? -eq 0 ]; then 
    rm smb.conf.tmp
+   echo "No change to the share ${2}.">&2
    exit 3
 fi
 
