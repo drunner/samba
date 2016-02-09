@@ -1,12 +1,15 @@
 # drunner-samba #
 
-Simple service to provide samba shares
+Simple dService to provide samba shares. Designed to be really easy to set up for developers,
+so they can share their linux checkouts to their Windows/Mac desktop and edit using their 
+favourite tools.
 
-# use #
+# Example use #
 
 ~~~
 drunner install drunner/samba
-samba share 
+samba user add myname mypassword
+samba share -w myname -p ro /home/myname myname
 ~~~
 
 
@@ -53,5 +56,3 @@ SHARE OPTIONS
         All users access the share with group GROUP
 
 ```
-
-https://github.com/dogestry/dogestry
