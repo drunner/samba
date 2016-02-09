@@ -115,10 +115,14 @@ function main {
             dockerrun sudo "docker-smb-getshares"   
             ;;
            
-         destroy)
+         obliterate)
             stopService
             ;;
                      
+         uninstall)
+            stopService
+            ;;
+
          backupstart)
             # all volumes are automatically backed up, we just need to pause the service so it's
             # warm not hot!
