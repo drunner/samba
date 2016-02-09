@@ -1,8 +1,10 @@
-# drunner-samba #
+# drunner/samba #
 
 Simple dService to provide samba shares. Designed to be really easy to set up for developers,
 so they can share their linux checkouts to their Windows/Mac desktop and edit using their 
 favourite tools.
+
+See http://drunner.io for more information about dRunner.
 
 # Example use #
 
