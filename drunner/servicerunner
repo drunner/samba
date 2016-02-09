@@ -75,8 +75,11 @@ function dockerrun {
 # detached, can't remove.
 function sambarundaemon {
    # TODO: add in root stuff to "${VOLMOUNTOPTS[@]}", by calling through to docker-smb-get-shares
-   die "Not yet working. Check back soon!"
+
+   VOLMOUNTOPTS=( $(docker-smb-get-shares) )
+
    docker run -d "-p" "137:137/udp" "-p" "138:138/udp" "-p" "135:135" "-p" "139:139" "-p" "445:445" "--restart=always" \
+		"${VOLMOUNTOPTS[@]}" "${DOCKEROPTS[@]}"   \
              --name="${SERVICENAME}-${COMMAND}" -h "${HOSTNAME}" "${IMAGENAME}"
    # "$@"
    [ $? -eq 0 ] || die "${SERVICENAME} ${COMMAND} failed."

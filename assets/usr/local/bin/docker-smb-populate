@@ -14,7 +14,7 @@ cp -a /originals/varlibsamba/* /var/lib/samba/   || die "Can't copy originals to
 
 
 [ -d /etc/samba/dockershareinfo ] || mkdir /etc/samba/dockershareinfo || die "Can't create /etc/samba/dockershareinfo"
-[ -e /etc/samba/initcomplete]     || touch /etc/samba/initcomplete    || die "Can't create /etc/samba/initcomplete"
+[ -e /etc/samba/initcomplete ]    || touch /etc/samba/initcomplete    || die "Can't create /etc/samba/initcomplete"
 
 cat <<EOF > /etc/samba/smb.conf
 [global]
