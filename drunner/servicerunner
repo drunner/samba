@@ -74,9 +74,10 @@ function dockerrun {
 
 # detached, can't remove.
 function sambarundaemon {
-   # TODO: add in root stuff to "${VOLMOUNTOPTS[@]}", by calling through to docker-smb-get-shares
+#   VOLMOUNTOPTS=( $(docker run -i --name "${SERVICENAME}-getshares" "${VOLMOUNTOPTS[@]}" ${IMAGENAME} docker-smb-getshares) )
+   VOLMOUNTOPTS=($(dockerrun docker-smb-getshares))
 
-   VOLMOUNTOPTS=( $(docker-smb-get-shares) )
+   echo "${VOLMOUNTOPTS[@]}"
 
    docker run -d "-p" "137:137/udp" "-p" "138:138/udp" "-p" "135:135" "-p" "139:139" "-p" "445:445" "--restart=always" \
 		"${VOLMOUNTOPTS[@]}" "${DOCKEROPTS[@]}"   \
@@ -91,7 +92,6 @@ function sambarundaemon {
 function showStatus {
    container_exists "${SERVICENAME}-start"  || { echo "${SERVICENAME}'s container is stopped and removed." ; exit 0 ; }
    container_running "${SERVICENAME}-start" || { echo "${SERVICENAME}'s container is stopped but not removed." ; exit 0 ; }
-   getPort
    echo "Samba is running on ${HOSTIP}."   
 }
 
