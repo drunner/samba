@@ -77,8 +77,6 @@ function sambarundaemon {
 #   VOLMOUNTOPTS=( $(docker run -i --name "${SERVICENAME}-getshares" "${VOLMOUNTOPTS[@]}" ${IMAGENAME} docker-smb-getshares) )
    VOLMOUNTOPTS=($(dockerrun docker-smb-getshares))
 
-   echo "${VOLMOUNTOPTS[@]}"
-
    docker run -d "-p" "137:137/udp" "-p" "138:138/udp" "-p" "135:135" "-p" "139:139" "-p" "445:445" "--restart=always" \
 		"${VOLMOUNTOPTS[@]}" "${DOCKEROPTS[@]}"   \
              --name="${SERVICENAME}-${COMMAND}" -h "${HOSTNAME}" "${IMAGENAME}"
