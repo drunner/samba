@@ -59,7 +59,7 @@ EOF
 }
 
 #------------------------------------------------------------------------------------
-# Run a command in the container. 
+# Run a command in a temporary container. 
 
 function dockerrun {
    local RVAL=0
