@@ -26,11 +26,10 @@ RUN   useradd -M PCGUEST && \
 
 # allow sudo to run our scripts and my_init.
 RUN echo "samba ALL= (ALL) NOPASSWD: /usr/local/bin/,/sbin/my_init" > /etc/sudoers.d/samba
+RUN chmod 0440 /etc/sudoers.d/samba
 
 USER samba
 
 VOLUME ["/etc/samba","/var/lib/samba","/var/lib/extrausers"]
 
 CMD ["sudo","/sbin/my_init"]
-
-
